@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 services:
 #----- API Gatway ---------
   nginx:
@@ -8,6 +8,7 @@ services:
       - api_customer
       - api_book
       - api_blog
+      - automation
    volumes:
       - ./gateway/default.conf:/etc/nginx/conf.d/default.conf
       - ./gateway/index.html:/usr/share/nginx/html/index.html
@@ -23,6 +24,16 @@ services:
     image: api_customer:latest
     ports:
       - '8000:8000'
+    networks:
+      - proxy
+#----- Add automation powered by Python
+  automation:    
+    container_name: 'automation'
+    build: 
+      context: ./automation_test_rest/
+    image: automation:latest
+    ports:
+      - '8003:8003'
     networks:
       - proxy
 #----- REST API Book powered by Golang
